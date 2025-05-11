@@ -63,6 +63,44 @@ class ForecastDetailRouteArgs {
 }
 
 /// generated route for
+/// [HourlyWeatherDetailScreen]
+class HourlyWeatherDetailRoute
+    extends PageRouteInfo<HourlyWeatherDetailRouteArgs> {
+  HourlyWeatherDetailRoute({
+    Key? key,
+    required HourlyForecast forecast,
+    List<PageRouteInfo>? children,
+  }) : super(
+         HourlyWeatherDetailRoute.name,
+         args: HourlyWeatherDetailRouteArgs(key: key, forecast: forecast),
+         initialChildren: children,
+       );
+
+  static const String name = 'HourlyWeatherDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<HourlyWeatherDetailRouteArgs>();
+      return HourlyWeatherDetailScreen(key: args.key, forecast: args.forecast);
+    },
+  );
+}
+
+class HourlyWeatherDetailRouteArgs {
+  const HourlyWeatherDetailRouteArgs({this.key, required this.forecast});
+
+  final Key? key;
+
+  final HourlyForecast forecast;
+
+  @override
+  String toString() {
+    return 'HourlyWeatherDetailRouteArgs{key: $key, forecast: $forecast}';
+  }
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
@@ -105,7 +143,7 @@ class WeatherHomeRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return WeatherHomeScreen();
+      return const WeatherHomeScreen();
     },
   );
 }

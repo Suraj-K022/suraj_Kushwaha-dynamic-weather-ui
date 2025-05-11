@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task/core/services/storage/settings_storage.dart';
+import 'package:task/core/services/settings_storage.dart';
 
 import 'core/routes/app_router.dart'; // Import the router
 

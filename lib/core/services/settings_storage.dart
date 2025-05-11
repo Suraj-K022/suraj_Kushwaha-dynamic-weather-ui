@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../core/models/weather_model.dart'; // Add the necessary imports
+import '../../../core/models/weather_model.dart'; // Add the necessary imports
 
 class UserSettings {
   final bool isCelsius;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/routes/app_router.dart';
-import '../../../../core/services/storage/settings_storage.dart';
+import '../../../../core/services/settings_storage.dart';
 import '../../../../core/utils/Images.dart';
 import '../../../../core/utils/temperature_utils.dart';
 

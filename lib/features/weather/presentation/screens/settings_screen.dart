@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import '../../../../core/routes/app_router.dart';
-import '../../../../core/services/storage/settings_storage.dart';
+import '../../../../core/services/settings_storage.dart';
 import '../../../../core/models/weather_model.dart';
 
 @RoutePage()
@@ -77,6 +77,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(onTap: ()=> Navigator.of(context).pop(),
+            child: Icon(Icons.arrow_back_ios_new_outlined,size: 24,color: Colors.black,)),
         title: const Text('Settings'),
         backgroundColor: Colors.lightBlue[100], // Very light blue
       ),
