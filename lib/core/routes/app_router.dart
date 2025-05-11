@@ -16,8 +16,9 @@ class AppRouter extends RootStackRouter implements AutoRouterConfig {
   List<AutoRoute> get routes => [
     AutoRoute(page: SplashRoute.page, initial: true),
     AutoRoute(page: WeatherHomeRoute.page),
-    AutoRoute(page: ForecastDetailRoute.page, path: '/forecast/:cityName'),
+    // AutoRoute(page: MultiDayScreen.page),
     AutoRoute(page: SettingsRoute.page),
+    AutoRoute(page: ForecastDetailRoute.page), // ✅ Make sure this is added!
   ];
 
   @override

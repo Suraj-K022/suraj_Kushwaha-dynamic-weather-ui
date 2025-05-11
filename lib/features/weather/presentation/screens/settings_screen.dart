@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/services/storage/settings_storage.dart';
+import '../../../../core/models/weather_model.dart'; // Import DailyForecast model
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'selectedCity': FormControl<String>(value: 'New York'),
   });
 
+  List<DailyForecast> forecast = []; // Example forecast list
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await settingsService.loadSettings();
       form.control('isCelsius').value = settingsService.isCelsius;
       form.control('selectedCity').value = settingsService.selectedCity;
+
+      // Example: Populate the forecast list with sample data
+      forecast = List.generate(7, (index) {
+        final date = DateTime.now().add(Duration(days: index));
+        return DailyForecast(
+          date: date,
+          highTemp: 25 + index.toDouble(),
+          lowTemp: 15 + index.toDouble(),
+          conditionCode: 'clear',
+          conditionDescription: 'Clear skies',
+          iconId: '01d',
+          precipitationProbability: 0.1 * index,
+          uvIndex: 5 + index,
+          sunrise: date.copyWith(hour: 6),
+          sunset: date.copyWith(hour: 18),
+          hourlyForecasts: List.generate(24, (hour) {
+            return HourlyForecast(
+              time: date.copyWith(hour: hour),
+              temperature: 15 + hour.toDouble() / 2,
+              conditionCode: 'clear',
+              iconId: '01d',
+            );
+          }),
+        );
+      });
+
     });
   }
 
@@ -87,6 +116,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              // Button to navigate to ForecastDetailScreen
+              ElevatedButton(
+                onPressed: () {
+                  if (forecast.isNotEmpty) {
+                    context.router.push(
+                      ForecastDetailRoute(
+                        dayIndex: 2,
+                        forecast: forecast,
+                      ),
+                    );
+                  }
+                },
+                child: const Text('View Forecast Detail'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+
             ],
           ),
         ),
