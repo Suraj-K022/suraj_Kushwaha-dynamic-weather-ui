@@ -45,6 +45,7 @@ dependencies:
   uuid: ^4.0.0
   reactive_date_time_picker: ^5.0.0
   shared_preferences: ^2.5.3
+  logger: ^2.5.0
 
 
 

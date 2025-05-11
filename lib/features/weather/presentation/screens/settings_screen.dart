@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import '../../../../core/models/weather_model.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/services/storage/settings_storage.dart';
 
@@ -25,8 +24,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    settingsService = Provider.of<SettingsService>(context, listen: false);
-    settingsService.loadSettings().then((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      settingsService = Provider.of<SettingsService>(context, listen: false);
+      await settingsService.loadSettings();
       form.control('isCelsius').value = settingsService.isCelsius;
       form.control('selectedCity').value = settingsService.selectedCity;
     });
@@ -40,28 +40,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       UserSettings(
         isCelsius: isCelsius,
         selectedCity: selectedCity,
-      ),
-    );
-
-    // Mock data for demonstration purposes
-    final mockWeatherData = AppWeatherData(
-      currentWeather: CurrentWeather(
-        city: selectedCity,
-        temperature: 22.0,
-        conditionCode: '01d',
-        conditionDescription: 'Clear Sky',
-        humidity: 60,
-        windSpeed: 10.0,
-        windDirection: 'NE',
-        feelsLike: 21.5,
-        pressure: 1012,
-        visibility: 10.0,
-        iconId: '01d',
-      ),
-      sevenDayForecast: [],
-      appSettings: WeatherSettings(
-        isCelsius: isCelsius,
-        selectedCityName: selectedCity,
       ),
     );
 
@@ -81,12 +59,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ReactiveSwitchListTile(
                 formControlName: 'isCelsius',
                 title: const Text('Temperature Unit'),
-                subtitle: ReactiveValueListenableBuilder<bool>(
-                  formControlName: 'isCelsius',
-                  builder: (context, control, _) {
-                    return Text(control.value! ? 'Celsius' : 'Fahrenheit');
-                  },
-                ),
+                subtitle: ReactiveValueListenableBuilder<bool>(formControlName: 'isCelsius', builder: (context, control, _) {
+                  return Text(control.value! ? 'Celsius' : 'Fahrenheit');
+                }),
               ),
               const SizedBox(height: 20),
               ReactiveDropdownField<String>(
@@ -102,8 +77,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: _saveSettingsAndNavigate,
-                icon: const Icon(Icons.check),
                 label: const Text('Save Settings'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ],
           ),

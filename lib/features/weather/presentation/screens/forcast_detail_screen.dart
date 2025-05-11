@@ -2,14 +2,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:task/features/weather/presentation/widgets/weather_detail_panel.dart';
 
+import '../../../../core/models/weather_model.dart';
+
 @RoutePage()
 class ForecastDetailScreen extends StatelessWidget {
   final int dayIndex;
+  final List<DailyForecast> forecast;  // Add the forecast parameter
 
-  const ForecastDetailScreen({super.key, required this.dayIndex});
+  const ForecastDetailScreen({super.key, required this.dayIndex, required this.forecast});
 
   @override
   Widget build(BuildContext context) {
+    // Get the forecast data for the specific day
+    final DailyForecast selectedForecast = forecast[dayIndex];
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -26,10 +32,14 @@ class ForecastDetailScreen extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: WeatherDetailPanel(dayIndex: dayIndex),
+            child: WeatherDetailPanel(
+              forecast: selectedForecast,
+              // Pass the selected day's forecast
+            ),
           ),
         ],
       ),
     );
   }
 }
+

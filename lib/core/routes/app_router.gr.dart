@@ -16,10 +16,15 @@ class ForecastDetailRoute extends PageRouteInfo<ForecastDetailRouteArgs> {
   ForecastDetailRoute({
     Key? key,
     required int dayIndex,
+    required List<DailyForecast> forecast,
     List<PageRouteInfo>? children,
   }) : super(
          ForecastDetailRoute.name,
-         args: ForecastDetailRouteArgs(key: key, dayIndex: dayIndex),
+         args: ForecastDetailRouteArgs(
+           key: key,
+           dayIndex: dayIndex,
+           forecast: forecast,
+         ),
          initialChildren: children,
        );
 
@@ -29,21 +34,31 @@ class ForecastDetailRoute extends PageRouteInfo<ForecastDetailRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<ForecastDetailRouteArgs>();
-      return ForecastDetailScreen(key: args.key, dayIndex: args.dayIndex);
+      return ForecastDetailScreen(
+        key: args.key,
+        dayIndex: args.dayIndex,
+        forecast: args.forecast,
+      );
     },
   );
 }
 
 class ForecastDetailRouteArgs {
-  const ForecastDetailRouteArgs({this.key, required this.dayIndex});
+  const ForecastDetailRouteArgs({
+    this.key,
+    required this.dayIndex,
+    required this.forecast,
+  });
 
   final Key? key;
 
   final int dayIndex;
 
+  final List<DailyForecast> forecast;
+
   @override
   String toString() {
-    return 'ForecastDetailRouteArgs{key: $key, dayIndex: $dayIndex}';
+    return 'ForecastDetailRouteArgs{key: $key, dayIndex: $dayIndex, forecast: $forecast}';
   }
 }
 

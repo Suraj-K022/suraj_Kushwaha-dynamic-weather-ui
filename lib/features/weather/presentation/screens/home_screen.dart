@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/services/storage/settings_storage.dart';
+
+import '../../../../core/utils/temperature_utils.dart';  // Import the TemperatureUtils class
+
 @RoutePage()
 class WeatherHomeScreen extends StatelessWidget {
   @override
@@ -11,23 +14,36 @@ class WeatherHomeScreen extends StatelessWidget {
     return Consumer<SettingsService>(
       builder: (context, settings, _) {
         final cityName = settings.selectedCity;
-        final currentTemp = settings.isCelsius ? 25.3 : 77.5;
-        final weatherCondition = "Sunny"; // Replace with dynamic weather data
-        final weatherIconAsset = 'assets/images/sunny.png'; // Replace with dynamic logic
-        final humidity = 60; // Example value
-        final windSpeed = 15; // Example value in km/h
-        final windDirection = "NE"; // Example value
-        final feelsLikeTemp = 24.0; // Example value
-        final pressure = 1012; // Example value in hPa
-        final visibility = 10.0; // Example value in km
+
+        // Get the raw temperature data
+        final currentTempCelsius = settings.weatherData?.currentWeather.temperature ?? 0;
+        final feelsLikeTempCelsius = settings.weatherData?.currentWeather.feelsLike ?? 0;
+
+        // Convert based on the selected temperature unit
+        final currentTemp = settings.isCelsius
+            ? TemperatureUtils.format(currentTempCelsius)
+            : TemperatureUtils.format(TemperatureUtils.toFahrenheit(currentTempCelsius));
+
+        final feelsLikeTemp = settings.isCelsius
+            ? TemperatureUtils.format(feelsLikeTempCelsius)
+            : TemperatureUtils.format(TemperatureUtils.toFahrenheit(feelsLikeTempCelsius));
+
+        // Weather data
+        final weatherCondition = settings.weatherData?.currentWeather.conditionDescription ?? "Unknown";
+        final weatherIconAsset = 'assets/images/sunny.png';  // You can dynamically change this based on the weather
+        final humidity = settings.weatherData?.currentWeather.humidity ?? 0;
+        final windSpeed = settings.weatherData?.currentWeather.windSpeed ?? 0;
+        final windDirection = settings.weatherData?.currentWeather.windDirection ?? "Unknown";
+        final pressure = settings.weatherData?.currentWeather.pressure ?? 0;
+        final visibility = settings.weatherData?.currentWeather.visibility ?? 0;
 
         return Scaffold(
+          backgroundColor: Colors.blueGrey[50],
           body: CustomScrollView(
             slivers: [
-              // Sliver AppBar for Current Weather
               SliverAppBar(
                 leading: SizedBox(),
-                expandedHeight: 300,
+                expandedHeight: 320,
                 floating: false,
                 pinned: true,
                 backgroundColor: Colors.blueAccent,
@@ -37,7 +53,6 @@ class WeatherHomeScreen extends StatelessWidget {
                     icon: Icon(Icons.settings, color: Colors.white),
                     onPressed: () {
                       context.router.push(SettingsRoute());
-
                     },
                   ),
                 ],
@@ -45,20 +60,21 @@ class WeatherHomeScreen extends StatelessWidget {
                   titlePadding: EdgeInsets.only(left: 16, bottom: 16),
                   title: Row(
                     children: [
-                      Icon(Icons.location_on, color: Colors.white70, size: 18),
-                      SizedBox(width: 4),
+                      Icon(Icons.location_on, color: Colors.white70, size: 20),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '$cityName - ${currentTemp.toStringAsFixed(1)}°${settings.isCelsius ? 'C' : 'F'}',
+                          '$cityName - $currentTemp°${settings.isCelsius ? 'C' : 'F'}',
                           style: TextStyle(
                             color: Colors.white,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600,
                             shadows: [
                               Shadow(
                                 color: Colors.black.withOpacity(0.5),
                                 offset: Offset(0, 1),
-                                blurRadius: 2,
-                              )
+                                blurRadius: 3,
+                              ),
                             ],
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -87,40 +103,54 @@ class WeatherHomeScreen extends StatelessWidget {
                 ),
               ),
 
-              // Weather Metrics Panel in Boxes
+              // Weather Metrics Panel
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Current Weather Metrics',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          WeatherMetricBox(title: 'Humidity', value: '$humidity%'),
-                          WeatherMetricBox(title: 'Wind Speed', value: '$windSpeed km/h'),
-                          WeatherMetricBox(title: 'Wind Direction', value: windDirection),
-                          WeatherMetricBox(
-                            title: 'Feels Like',
-                            value: '${feelsLikeTemp.toStringAsFixed(1)}°${settings.isCelsius ? 'C' : 'F'}',
-                          ),
-                          WeatherMetricBox(title: 'Pressure', value: '$pressure hPa'),
-                          WeatherMetricBox(title: 'Visibility', value: '$visibility km'),
-                        ],
+                      // SizedBox(height: 20),
+                      // Use GridView for uniform sizing
+                      GridView.builder(
+                        shrinkWrap: true, // Ensures GridView takes only as much space as needed
+                        physics: NeverScrollableScrollPhysics(), // Prevents scrolling
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Number of columns in the grid
+                          crossAxisSpacing: 16, // Space between columns
+                          mainAxisSpacing: 16, // Space between rows
+                          childAspectRatio: 1.5, // Controls the aspect ratio of each box
+                        ),
+                        itemCount: 6, // Total number of items in the grid
+                        itemBuilder: (context, index) {
+                          final weatherMetrics = [
+                            WeatherMetricBox(title: 'Humidity', value: '$humidity%'),
+                            WeatherMetricBox(title: 'Wind Speed', value: '$windSpeed km/h'),
+                            WeatherMetricBox(title: 'Wind Direction', value: windDirection),
+                            WeatherMetricBox(
+                              title: 'Feels Like',
+                              value: '$feelsLikeTemp°${settings.isCelsius ? 'C' : 'F'}',
+                            ),
+                            WeatherMetricBox(title: 'Pressure', value: '$pressure hPa'),
+                            WeatherMetricBox(title: 'Visibility', value: '$visibility km'),
+                          ];
+
+                          return weatherMetrics[index]; // Return the corresponding WeatherMetricBox
+                        },
                       ),
                     ],
                   ),
                 ),
-              ),
+              )
+
             ],
           ),
         );
@@ -129,39 +159,49 @@ class WeatherHomeScreen extends StatelessWidget {
   }
 }
 
-// Widget to display each weather metric as a box
+
+
 class WeatherMetricBox extends StatelessWidget {
   final String title;
   final String value;
 
-  const WeatherMetricBox({required this.title, required this.value});
+  const WeatherMetricBox({
+    required this.title,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: (MediaQuery.of(context).size.width - 48) / 2, // Two per row with spacing
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 4,
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+    return Card(
+      color: Colors.white,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12), // More rounded corners
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0), // Increased padding for larger cards
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[800],
               ),
-              SizedBox(height: 8),
-              Text(
-                value,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.blueGrey[600],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

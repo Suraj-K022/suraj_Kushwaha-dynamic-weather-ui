@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-
-
+import '../../../../core/models/weather_model.dart'; // Assuming your weather model is here
 class WeatherDetailPanel extends StatelessWidget {
-  final int dayIndex;
+  final DailyForecast forecast;
 
-  const WeatherDetailPanel({Key? key, required this.dayIndex}) : super(key: key);
+  const WeatherDetailPanel({Key? key, required this.forecast}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Sample detailed weather data for the selected day (this should come from a model/API)
     final weatherDetails = {
-      "Description": "Partly cloudy with a chance of rain",
-      "Temperature Range": "15°C - 22°C",
-      "Wind Speed": "18 km/h",
+      "Description": forecast.conditionDescription,
+      "Temperature Range": "${forecast.lowTemp}°C - ${forecast.highTemp}°C",
+      "Wind Speed": "5 km/h", // Assuming static or use current weather data
       "Pressure": "1010 hPa",
       "Humidity": "70%",
       "UV Index": "Moderate",
