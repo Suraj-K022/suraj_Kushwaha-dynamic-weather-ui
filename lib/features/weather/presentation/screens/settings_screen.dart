@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/services/storage/settings_storage.dart';
-import '../../../../core/models/weather_model.dart'; // Import DailyForecast model
+import '../../../../core/models/weather_model.dart';
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'selectedCity': FormControl<String>(value: 'New York'),
   });
 
-  List<DailyForecast> forecast = []; // Example forecast list
+  List<DailyForecast> forecast = [];
 
   @override
   void initState() {
@@ -33,7 +33,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       form.control('isCelsius').value = settingsService.isCelsius;
       form.control('selectedCity').value = settingsService.selectedCity;
 
-      // Example: Populate the forecast list with sample data
       forecast = List.generate(7, (index) {
         final date = DateTime.now().add(Duration(days: index));
         return DailyForecast(
@@ -57,7 +56,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }),
         );
       });
-
     });
   }
 
@@ -78,7 +76,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        backgroundColor: Colors.lightBlue[100], // Very light blue
+      ),
+      backgroundColor: Colors.lightBlue[100], // Very light blue for the background
       body: ReactiveForm(
         formGroup: form,
         child: Padding(
@@ -87,6 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               ReactiveSwitchListTile(
                 formControlName: 'isCelsius',
+                activeColor: Colors.blue,
                 title: const Text('Temperature Unit'),
                 subtitle: ReactiveValueListenableBuilder<bool>(formControlName: 'isCelsius', builder: (context, control, _) {
                   return Text(control.value! ? 'Celsius' : 'Fahrenheit');
@@ -104,42 +107,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     .toList(),
               ),
               const SizedBox(height: 30),
-              ElevatedButton.icon(
-                onPressed: _saveSettingsAndNavigate,
-                label: const Text('Save Settings'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  onPressed: _saveSettingsAndNavigate,
+                  label: const Text('Save Settings', style: TextStyle(fontSize: 14)),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              // Button to navigate to ForecastDetailScreen
-              ElevatedButton(
-                onPressed: () {
-                  if (forecast.isNotEmpty) {
-                    context.router.push(
-                      ForecastDetailRoute(
-                        dayIndex: 2,
-                        forecast: forecast,
-                      ),
-                    );
-                  }
-                },
-                child: const Text('View Forecast Detail'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (forecast.isNotEmpty) {
+                      context.router.push(
+                        ForecastDetailRoute(
+                          dayIndex: 2,
+                          forecast: forecast,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('View Forecast Detail', style: TextStyle(fontSize: 14)),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
-
             ],
           ),
         ),

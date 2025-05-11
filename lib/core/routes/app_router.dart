@@ -10,15 +10,14 @@ part 'app_router.gr.dart';
 
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter implements AutoRouterConfig {
-  AppRouter({super.navigatorKey}); // Optional if you want custom navKey
+  AppRouter({super.navigatorKey});
 
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: SplashRoute.page, initial: true),
     AutoRoute(page: WeatherHomeRoute.page),
-    // AutoRoute(page: MultiDayScreen.page),
     AutoRoute(page: SettingsRoute.page),
-    AutoRoute(page: ForecastDetailRoute.page), // ✅ Make sure this is added!
+    AutoRoute(page: ForecastDetailRoute.page),
   ];
 
   @override

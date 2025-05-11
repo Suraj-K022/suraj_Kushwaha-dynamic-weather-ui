@@ -46,6 +46,7 @@ dependencies:
   reactive_date_time_picker: ^5.0.0
   shared_preferences: ^2.5.3
   logger: ^2.5.0
+  google_fonts: ^6.2.1
 
 
 

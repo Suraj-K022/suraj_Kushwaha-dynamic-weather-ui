@@ -25,13 +25,16 @@ class ForecastDetailScreen extends StatelessWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 160,
+            expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(dateFormat.format(day.date)),
+              title: Text(
+                dateFormat.format(day.date),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.blue],
+                    colors: [Colors.blueAccent, Colors.blue],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -40,39 +43,39 @@ class ForecastDetailScreen extends StatelessWidget {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _infoTile('High Temperature', '${day.highTemp}°'),
+                _infoTile('High Temperature', '${day.highTemp}°', isBold: true),
                 _infoTile('Low Temperature', '${day.lowTemp}°'),
                 _infoTile('Condition', day.conditionDescription),
-                _infoTile('UV Index', '${day.uvIndex}'),
+                _infoTile('UV Index', '${day.uvIndex}', isBold: true),
                 _infoTile('Precipitation', '${(day.precipitationProbability * 100).toStringAsFixed(0)}%'),
                 _infoTile('Sunrise', timeFormat.format(day.sunrise)),
                 _infoTile('Sunset', timeFormat.format(day.sunset)),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 const Text(
                   'Hourly Forecast',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueAccent),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 SizedBox(
-                  height: 120,
+                  height: 130,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: day.hourlyForecasts.length,
                     itemBuilder: (context, index) {
                       final hour = day.hourlyForecasts[index];
                       return Container(
-                        width: 80,
-                        padding: const EdgeInsets.all(8),
+                        width: 100,
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black12,
-                              blurRadius: 4,
+                              blurRadius: 6,
                               offset: Offset(0, 2),
                             ),
                           ],
@@ -82,20 +85,20 @@ class ForecastDetailScreen extends StatelessWidget {
                           children: [
                             Text(
                               timeFormat.format(hour.time),
-                              style: const TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8),
                             Icon(Icons.wb_sunny, color: Colors.orangeAccent),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 6),
                             Text(
                               '${hour.temperature}°',
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    separatorBuilder: (_, __) => const SizedBox(width: 16),
                   ),
                 ),
               ]),
@@ -106,17 +109,28 @@ class ForecastDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoTile(String label, String value) {
+  Widget _infoTile(String label, String value, {bool isBold = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           Expanded(
-            child: Text(label, style: const TextStyle(fontSize: 16)),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent,
+              ),
+            ),
           ),
           Text(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: Colors.black87,
+            ),
           ),
         ],
       ),
