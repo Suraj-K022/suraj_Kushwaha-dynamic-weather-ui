@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../../../../core/models/weather_model.dart';
 import '../../../../core/routes/app_router.dart';
 
@@ -25,8 +26,10 @@ class ForecastDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            leading: InkWell(onTap: ()=> Navigator.of(context).pop(),
-                child: Icon(Icons.arrow_back_ios_new_outlined,size: 24,color: Colors.black,)),
+            leading: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(Icons.arrow_back_ios_new_outlined, size: 24, color: Colors.black),
+            ),
             pinned: true,
             expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
@@ -69,61 +72,72 @@ class ForecastDetailScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 SizedBox(
                   height: 140,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: day.hourlyForecasts.length,
-                    itemBuilder: (context, index) {
-                      final hour = day.hourlyForecasts[index];
-                      return GestureDetector(
-                        onTap: () {
-                          context.pushRoute(
-                            HourlyWeatherDetailRoute(forecast: hour),
-                          );
-                        },
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                timeFormat.format(hour.time),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
+                  child: AnimationLimiter(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: day.hourlyForecasts.length,
+                      itemBuilder: (context, index) {
+                        final hour = day.hourlyForecasts[index];
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 500),
+                          child: SlideAnimation(
+                            horizontalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.pushRoute(
+                                    HourlyWeatherDetailRoute(forecast: hour),
+                                  );
+                                },
+                                child: Container(
+                                  width: 100,
+                                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 8,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        timeFormat.format(hour.time),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      Icon(
+                                        _getWeatherIcon(hour.conditionCode),
+                                        color: _getIconColor(hour.conditionCode),
+                                        size: 28,
+                                      ),
+                                      Text(
+                                        '${hour.temperature}°',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.blueGrey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Icon(
-                                _getWeatherIcon(hour.conditionCode),
-                                color: _getIconColor(hour.conditionCode),
-                                size: 28,
-                              ),
-                              Text(
-                                '${hour.temperature}°',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (_, __) => const SizedBox(width: 16),
+                        );
+                      },
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                    ),
                   ),
                 ),
               ]),

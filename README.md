@@ -35,6 +35,20 @@ A Flutter application showcasing a **visually appealing**, **interactive**, and 
 
 ---
 
+
+## ⚠️ Challenges Faced  
+
+1. `Freezed Setup Errors`
+   -- Faced "missing concrete implementation" errors due to incorrect part directives and build_runner usage. Fixed by ensuring correct annotations and regenerating files.
+2. `Complex Toolchain`
+   -- First time using multiple tools (freezed, json_serializable, reactive_forms, shared_preferences) together—required careful coordination and debugging.
+3. `Dynamic Temperature Conversion`
+   -- Implementing °C/°F switching throughout the app introduced challenges in maintaining consistency across widgets and persisted state.
+4. `Learning AutoRoute`
+   -- Faced a learning curve around route guards, nested routing, and passing models between screens with AutoRoute’s type-safe API.
+5. `Mock Data Handling`
+   -- Created mock data for multiple cities and ensured UI updated correctly with associated dynamic themes and forecasts.
+
 ## 📁 Folder Structure (Simplified)
 
 ```bash
@@ -56,4 +70,4 @@ lib/
 │           └── widgets/           # Reusable UI components (e.g., forecast cards, weather icons)
 │
 └── main.dart                      # App entry point
-        
+ 

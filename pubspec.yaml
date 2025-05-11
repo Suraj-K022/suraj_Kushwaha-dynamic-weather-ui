@@ -46,7 +46,9 @@ dependencies:
   reactive_date_time_picker: ^5.0.0
   shared_preferences: ^2.5.3
   logger: ^2.5.0
-  google_fonts: ^6.2.1
+#  google_fonts: ^6.2.1
+  flutter_staggered_animations: ^1.1.1
+  flutter_animate: ^4.5.2
 
 
 
